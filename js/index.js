@@ -3,6 +3,13 @@ const form = document.getElementById('form');
 const textArea = document.getElementById('text-area');
 const button = document.getElementById('button');
 
+// fetching user public ip address //
+ipLocate().then( response => {
+	console.log(response);
+}).catch( err => {
+	console.log(`User Public Ip Address Error => ${err}`);
+})
+
 // Listening Event On Form Submit //
 form.addEventListener('submit', (event) => {
 	// Prevent Page To Submit //
@@ -40,11 +47,11 @@ async function apiKey() {
 
 // function to fetch user public ip ip_address //
 async function ipLocate() {
-	const response = await fetch('https://api.ipify.org?format=json');
-	const jsonData = await response.json();
-	return jsonData;
+	const api = await fetch('https://api.ipify.org?format=json');
+	const jsonData = await api.json();
+	const data = jsonData.ip;
+	return data;
 }
-ipLocate();
 
 // function to fetch data of ip_address //
 async function geoLocate(ip) {
