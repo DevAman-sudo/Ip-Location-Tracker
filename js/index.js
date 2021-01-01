@@ -8,32 +8,39 @@ form.addEventListener('submit', (event) => {
 	// Prevent Page To Submit //
 	event.preventDefault();
 
-	async function apiKey() {
-		const response = await fetch('../ApiKey.json');
-		const jsonData = await response.json();
-		API_KEY = `${jsonData[0].API_KEY}`;
-		return API_KEY;
-	}
+	// fetched response data from apiKey api //
 	apiKey().then(response => {
-
+			// Constant Variables //
 			const API_KEY = `${response}`;
 			const ip_address = textArea.value;
-			// const ip_address = `43.245.86.17`;
 
-			async function geoLocate(ip) {
-				const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${API_KEY}&ip_address=${ip}`);
-				const jsonData = await api.json();
-				return jsonData;
-			}
+			// fetched response data from geoLocate api //
 			geoLocate(ip_address).then(response => {
 					console.log(response);
 				})
-				.catch(error => {
-					console.log(`Error Found => ${error}`);
+				// catch error while fetching data from ipgeolocation api //
+				.catch( err => {
+					console.log(`Error Found => ${err}`);
 				})
-
 		})
-		.catch(error => {
-			console.log(`Error Found => ${error}`);
-		});
+		// catching error if key not fetched from ApiKey.json //
+		.catch( err => {
+			console.log(err);
+			console.log(`ipgeolocation Api Key Not Found`);
+		})
 });
+
+// function to fetch ipgeolocation API_KEY //
+async function apiKey() {
+	const response = await fetch('../ApiKey.json');
+	const jsonData = await response.json();
+	API_KEY = `${jsonData[0].API_KEY}`;
+	return API_KEY;
+}
+
+// function to fetch data of ip_address //
+async function geoLocate(ip) {
+	const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${API_KEY}&ip_address=${ip}`);
+	const jsonData = await api.json();
+	return jsonData;
+}
