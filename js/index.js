@@ -38,6 +38,14 @@ async function apiKey() {
 	return API_KEY;
 }
 
+// function to fetch user public ip ip_address //
+async function ipLocate() {
+	const response = await fetch('https://api.ipify.org?format=json');
+	const jsonData = await response.json();
+	return jsonData;
+}
+ipLocate();
+
 // function to fetch data of ip_address //
 async function geoLocate(ip) {
 	const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${API_KEY}&ip_address=${ip}`);
