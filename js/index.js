@@ -2,11 +2,33 @@
 const form = document.getElementById('form');
 const textArea = document.getElementById('text-area');
 const button = document.getElementById('button');
+const dataContainer = document.getElementById('data-container');
+
+// function to append data //
+const appendData = (data) => {
+	let element = document.createElement('small');
+	element.innerText = data ;
+	dataContainer.appendChild(element);
+}
 
 // fetching user public ip address //
-ipLocate().then( response => {
-	console.log(response);
-}).catch( err => {
+ipLocate()
+.then( response => {
+	let ip_address = response;
+	textArea.value = response;
+	appendData(`Your Public Ip Address Is ${response}`);
+	
+	apiKey().then( response => {
+		let API_KEY = response ;
+		
+		geoLocate(ip_address).then( response => {
+			console.log( response )
+			appendData( JSON.stringify(response) )
+		})
+	})
+	.catch( err => console.error(err) );
+})
+.catch( err => {
 	console.log(`User Public Ip Address Error => ${err}`);
 })
 
@@ -18,8 +40,8 @@ form.addEventListener('submit', (event) => {
 	// fetched response data from apiKey api //
 	apiKey().then(response => {
 			// Constant Variables //
-			const API_KEY = `${response}`;
-			const ip_address = textArea.value;
+			let API_KEY = `${response}`;
+			let ip_address = textArea.value;
 
 			// fetched response data from geoLocate api //
 			geoLocate(ip_address).then(response => {
@@ -56,6 +78,6 @@ async function ipLocate() {
 // function to fetch data of ip_address //
 async function geoLocate(ip) {
 	const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${API_KEY}&ip_address=${ip}`);
-	const jsonData = await api.json();
+	const jsonData = await api.text();
 	return jsonData;
 }

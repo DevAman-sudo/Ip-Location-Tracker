@@ -28,3 +28,11 @@ body{
 #form {
 	margin: 1rem;
 }
+
+/* ipInfo Data Container */
+.data-container {
+	width: 100%;
+	height: auto;
+	padding: 1rem;
+	overflow-wrap: wrap;
+}
