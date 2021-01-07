@@ -1,0 +1,26 @@
+{
+  "name": "Ip-Location-Tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevAman-sudo/Ip-Location-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DevAman-sudo/Ip-Location-Tracker/issues"
+  },
+  "homepage": "https://github.com/DevAman-sudo/Ip-Location-Tracker#readme",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "express": "^4.17.1",
+    "nedb": "^1.8.0"
+  }
+}
