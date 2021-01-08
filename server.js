@@ -5,11 +5,13 @@ const DataStore = require('nedb');
 const chalk = require('chalk');
 const path = require('path');
 const fetch = require('node-fetch');
+const WebSocket = require('socket.io');
 require('dotenv');
 
 const database = new DataStore({ filename: path.join( __dirname , 'database.db' ) });
 database.loadDatabase();
 
+const io = WebSocket(server);
 const port = process.env.PORT || 8080 ;
 const staticPath = path.join( __dirname , '/public/');
 
@@ -18,16 +20,26 @@ app.use(express.static(staticPath));
 async function userIp() {
     let api = await fetch('https://api.ipify.org?format=json');
     let jsonData = await api.json();
-    database.insert(jsonData);
+    database.insert({
+        userIp: jsonData
+    });
 }
-userIp();
-
-// fetch('https://api.ipify.org?format=json').then( response => {
-    // console.log(response.json());
-// });
+// userIp();
 
 app.get('/' , ( req , res ) => {
     res.sendFile( path.join( staticPath , 'index.html' ));
+});
+
+// web socket connection //
+io.on( 'connection' , (socket) => {
+    
+    database.find( userIp , (err , data) => {
+        let fetchedIp = data[0].userIp.ip ;
+        console.log(fetchedIp);
+        
+        socket.emit('fetched-ip' , fetchedIp);
+    });
+    
 });
 
 server.listen( port , () => {

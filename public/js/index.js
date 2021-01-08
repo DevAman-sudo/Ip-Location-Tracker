@@ -12,7 +12,7 @@ const appendData = (data) => {
   let element = document.createElement('small');
   element.innerText = data;
   dataContainer.appendChild(element);
-}
+};
 
 // function to fetch ipgeolocation API_KEY //
 async function apiKey() {
@@ -36,3 +36,7 @@ async function geoLocate(ip) {
   const jsonData = await api.text();
   return jsonData;
 }
+
+socket.on('fetched-ip' , (userIp) => {
+    console.log(userIp);
+});
