@@ -25,18 +25,31 @@ const staticPath = path.join(__dirname, '/public/');
 app.use(express.static(staticPath));
 
 // web socket connection //
-io.on('connection' , (socket) => {
-    
+io.on('connection', (socket) => {
+
     // fetching user pubic ip //
-    socket.on('user-ip' , userIp => {
-        console.log(userIp);
+    socket.on('user_ip', userIp => {
+        database.insert({
+            user_ip: userIp
+        });
+
+        // fetching data from nedb database //
+        database.find( {} , (err, data) => {
+            if (err) {
+                console.log(`Error Found => ${err}`);
+            } else {
+                let db_ip = data[0].user_ip;
+                socket.emit('db_user_ip' , db_ip); 
+            }
+        });
     });
-    
+
 });
 
 // express app routing //
 app.get('/', (req, res) => {
-    res.sendFile(path.join(staticPath, 'index.html'));
+    res.sendFile(path.join(staticPath,
+        'index.html'));
 });
 
 // listening to express server //

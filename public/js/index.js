@@ -21,7 +21,11 @@ async function userIp() {
     return jsonData.ip;
 }
 userIp().then(response => {
-    socket.emit('user-ip' , response);
+    socket.emit('user_ip' , response);
+});
+
+socket.on('db_user_ip' , db_user_ip => {
+    appendData(db_user_ip);
 });
 
 // function to fetch data of ip_address //
