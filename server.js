@@ -24,18 +24,13 @@ const staticPath = path.join(__dirname, '/public/');
 // using public folder to server static web //
 app.use(express.static(staticPath));
 
-// function to fetch user public ip //
-async function userIp() {
-    let api = await fetch('https://api.ipify.org?format=json');
-    let jsonData = await api.json();
-    database.insert({
-        userIp: jsonData
-    });
-}
-// userIp();
-
 // web socket connection //
 io.on('connection' , (socket) => {
+    
+    // fetching user pubic ip //
+    socket.on('user-ip' , userIp => {
+        console.log(userIp);
+    });
     
 });
 
@@ -44,7 +39,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(staticPath, 'index.html'));
 });
 
-// listening to express server 
+// listening to express server //
 server.listen(port, () => {
     console.log(chalk.red.bgBlue.bold(`http://127.0.0.1:${port}`));
 });
