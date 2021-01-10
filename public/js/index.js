@@ -14,7 +14,11 @@ const appendData = (data) => {
   dataContainer.appendChild(element);
 };
 
-socket.on('fetched-ip' , (userIp) => {
-    textArea.value = userIp ;
-    appendData(userIp);
-});
+// function to fetch data of ip_address //
+async function geoLocate(ip) {
+    const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${GeoLocateKey}&ip_address=${ip}`);
+    const jsonData = await api.text();
+    database.insert({
+        apiData: jsonData
+    });
+}

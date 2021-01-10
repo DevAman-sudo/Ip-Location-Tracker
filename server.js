@@ -1,3 +1,4 @@
+// NPM Packages //
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
@@ -8,23 +9,22 @@ const fetch = require('node-fetch');
 const WebSocket = require('socket.io');
 require('dotenv').config();
 
+// NEDB lite weight database //
 const database = new DataStore({
     filename: path.join(__dirname, 'database.db')
 });
 database.loadDatabase();
 
-const databaseApi = new DataStore({
-    filename: path.join(__dirname, 'databaseApi.db')
-});
-databaseApi.loadDatabase();
-
+// setup app and port //
 const io = WebSocket(server);
 const port = process.env.PORT || 8080;
 const GeoLocateKey = process.env.API_KEY;
 const staticPath = path.join(__dirname, '/public/');
 
+// using public folder to server static web //
 app.use(express.static(staticPath));
 
+// function to fetch user public ip //
 async function userIp() {
     let api = await fetch('https://api.ipify.org?format=json');
     let jsonData = await api.json();
@@ -34,30 +34,17 @@ async function userIp() {
 }
 // userIp();
 
-// function to fetch data of ip_address //
-async function geoLocate(ip) {
-    const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${GeoLocateKey}&ip_address=${ip}`);
-    const jsonData = await api.text();
-    databaseApi.insert({
-        apiData: jsonData
-    });
-}
+// web socket connection //
+io.on('connection' , (socket) => {
+    
+});
 
+// express app routing //
 app.get('/', (req, res) => {
     res.sendFile(path.join(staticPath, 'index.html'));
 });
 
-// web socket connection //
-io.on('connection', (socket) => {
-
-    database.find(userIp, (err, data) => {
-        let fetchedIp = data[0].userIp.ip;
-        geoLocate(fetchedIp);
-        socket.emit('fetched-ip', fetchedIp);
-    });
-
-});
-
+// listening to express server 
 server.listen(port, () => {
     console.log(chalk.red.bgBlue.bold(`http://127.0.0.1:${port}`));
 });
