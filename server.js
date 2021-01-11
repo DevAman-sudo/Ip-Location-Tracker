@@ -53,14 +53,17 @@ io.on('connection', (socket) => {
                     databaseJSON.insert(jsonData);
                 }
                 geoLocate(db_ip);
-
             }
+
+            // fetching json data from database //
+            databaseJSON.find( {}, (err, data) => {
+                if (err) {
+                    console.log(`Error Found => ${err}`);
+                } else {
+                    socket.emit('api_json_data', data[0]);
+                }
+            });
         });
-    });
-    
-    // fetching json data from database //
-    databaseJSON.find( {} , (err , data) => {
-        
     });
 
 });

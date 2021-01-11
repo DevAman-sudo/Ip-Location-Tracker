@@ -28,3 +28,6 @@ socket.on('db_user_ip' , db_user_ip => {
     appendData(db_user_ip);
 });
 
+socket.on('api_json_data' , json_data => {
+    appendData(json_data);
+});
