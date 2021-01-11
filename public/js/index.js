@@ -28,8 +28,3 @@ socket.on('db_user_ip' , db_user_ip => {
     appendData(db_user_ip);
 });
 
-// function to fetch data of ip_address //
-async function geoLocate(ip) {
-    const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${GeoLocateKey}&ip_address=${ip}`);
-    const jsonData = await api.json();
-}

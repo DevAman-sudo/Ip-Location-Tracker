@@ -15,6 +15,11 @@ const database = new DataStore({
 });
 database.loadDatabase();
 
+const databaseJSON = new DataStore({
+    filename: path.join(__dirname, 'databaseJSON.db')
+});
+databaseJSON.loadDatabase();
+
 // setup app and port //
 const io = WebSocket(server);
 const port = process.env.PORT || 8080;
@@ -34,14 +39,28 @@ io.on('connection', (socket) => {
         });
 
         // fetching data from nedb database //
-        database.find( {} , (err, data) => {
+        database.find( {}, (err, data) => {
             if (err) {
                 console.log(`Error Found => ${err}`);
             } else {
                 let db_ip = data[0].user_ip;
-                socket.emit('db_user_ip' , db_ip); 
+                socket.emit('db_user_ip', db_ip);
+
+                // function to fetch data of ip_address //
+                async function geoLocate(ip) {
+                    const api = await fetch(`https://ipgeolocation.abstractapi.com/v1/?api_key=${GeoLocateKey}&ip_address=${ip}`);
+                    const jsonData = await api.json();
+                    databaseJSON.insert(jsonData);
+                }
+                geoLocate(db_ip);
+
             }
         });
+    });
+    
+    // fetching json data from database //
+    databaseJSON.find( {} , (err , data) => {
+        
     });
 
 });
